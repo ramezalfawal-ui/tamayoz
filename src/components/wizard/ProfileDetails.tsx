@@ -50,7 +50,7 @@ export function ProfileDetails({ onNext, onBack, profile, setProfile }: Props) {
     setProfile(p => ({ ...p, languages: p.languages.map((l, i) => i === idx ? { ...l, [field]: val } : l) }))
   const removeLang = (idx: number) => setProfile(p => ({ ...p, languages: p.languages.filter((_, i) => i !== idx) }))
 
-  const SectionHeader = ({ sectionKey, title, icon: Icon, onAdd }: { sectionKey: keyof typeof open; title: string; icon: React.ComponentType<{ size?: number; className?: string }>; onAdd: () => void }) => (
+  const SectionHeader = ({ sectionKey, title, icon: Icon, onAdd }: { sectionKey: keyof typeof open; title: string; icon: React.ElementType; onAdd: () => void }) => (
     <div
       className="flex items-center justify-between p-5 cursor-pointer hover:bg-surface/50 transition-colors"
       onClick={() => tog(sectionKey)}
