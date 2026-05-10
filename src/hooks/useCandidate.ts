@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getOrCreateCandidate, updateCandidate, getSkills, upsertScores } from '../lib/db'
-import { upsertSkills } from '../lib/db'
+import { getOrCreateCandidate, updateCandidate, getSkills, upsertScores, upsertSkills } from '../lib/db'
 import type { CandidateRow } from '../lib/database.types'
 
 export function useCandidate(userId: string | null | undefined) {
@@ -41,12 +40,13 @@ export function useCandidate(userId: string | null | undefined) {
 
   const saveAIScore = useCallback(async (aiResult: Record<string, unknown>) => {
     if (!candidate) return
-    const overall = aiResult.overall as number ?? 0
+    const overall = typeof aiResult.overall === 'number' ? aiResult.overall : 0
+    const scores  = Array.isArray(aiResult.scores) ? aiResult.scores as Array<{ score: number }> : []
     await upsertScores(candidate.id, {
       overall,
       readiness:     overall,
-      interview:     (aiResult.scores as { score: number }[])?.[2]?.score * 10 ?? 0,
-      communication: (aiResult.scores as { score: number }[])?.[5]?.score * 10 ?? 0,
+      interview:     scores[2] ? scores[2].score * 10 : 0,
+      communication: scores[5] ? scores[5].score * 10 : 0,
     }, aiResult)
   }, [candidate])
 
